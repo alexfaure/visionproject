@@ -1,7 +1,9 @@
 # This is a sample Python script.
 import cv2
+import numpy as np
+import pytesseract
 
-
+pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
 # Press Maj+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
@@ -18,8 +20,20 @@ if __name__ == '__main__':
                    ['U', 1], ['V', 4], ['W', 4], ['X', 8], ['Y', 4], ['Z', 10]]
     listWords = open(r"ressources\\ods6.txt").read().splitlines()
     print_hi('PyCharm')
-    path = r'ressources\\000000.bmp'
-    img = cv2.imread(path)
+    path = r'ressources\\scrabbletest.png'
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     cv2.imshow('image', img)
     cv2.waitKey(0)
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    ret, thresh1 = cv2.threshold(img, 40, 255, cv2.THRESH_BINARY)
+    cv2.imshow('image', thresh1)
+    cv2.waitKey(0)
+    thresh1 = cv2.medianBlur(thresh1, 5)
+    cv2.imshow('image', thresh1)
+    cv2.waitKey(0)
+    thresh1 = cv2.dilate(thresh1, np.ones((3, 3), np.uint8), iterations=1)
+    cv2.imshow('image', thresh1)
+    cv2.waitKey(0)
+    mots = (pytesseract.image_to_string(thresh1, config='--psm 11 -c tessedit_char_whitelist=ABCDEFGHIJKL'
+                                                        'MNOPQRSTUVWXYZ'))
+    mots = mots.replace(' ', '')
+    print(mots)
