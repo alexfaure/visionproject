@@ -89,7 +89,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(880, 690, 111, 61))
+        self.pushButton.setGeometry(QtCore.QRect(880,  120+300+100, 120, int(120/1.66)))
         self.pushButton.setObjectName("Joueur suivant")
 
         tab = Tableau_score()
