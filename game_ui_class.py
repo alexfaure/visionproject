@@ -143,16 +143,41 @@ class Ui_MainWindow(object):
 
         print(im.filename)
 
+        # Compartiment pour un texte à afficher
+        self.text_to_display=QtWidgets.QLineEdit(MainWindow)
+        self.text_to_display.setGeometry(QtCore.QRect(880+40,700,100,20))
+        self.text_to_display.setObjectName("Display")
+
+
+        # Compartiment pour un text a inserer
+        self.text_to_insert=QtWidgets.QLineEdit(MainWindow)
+        self.text_to_insert.setGeometry(QtCore.QRect(780,700,100,20))
+        self.text_to_insert.setObjectName("Insert")
+
+        #Bouton pour executer la réponse
+        self.push_reponse=QtWidgets.QPushButton(self.centralwidget)
+        self.push_reponse.setGeometry(QtCore.QRect(880, 700, 40, 20))
+        self.push_reponse.setObjectName("R")
+        
+        
+        
+        
+        
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.show()
         self.pushButton.clicked.connect(lambda: self.show_next(im, tab))
+        self.push_reponse.clicked.connect(self.repondre)
+        self.text_to_display.setText("truc a afficher")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton.setText(_translate("MainWindow", "Joueur suivant"))
         # self.label.setText(_translate("MainWindow", "Image de la partie"))
+        self.text_to_display.setText(_translate("MainWindow", "Display"))
+        self.text_to_insert.setText(_translate("MainWindow", "Insert"))
+        self.push_reponse.setText(_translate("MainWindow","R"))
 
     def show_next(self, im, tab):
         # Début du traitement de l'image
@@ -206,3 +231,12 @@ class Ui_MainWindow(object):
         self.nbTours += 1
         # print(tab.joueurs[j].score)
         im.next_image()
+        
+        
+    #Réponse à une question
+    def repondre(self):
+        question=self.text_to_insert.text()
+        #### Quelque chose se passe ####
+        reponse=question+str(7854)
+        ###############################
+        self.text_to_display.setText(reponse)
