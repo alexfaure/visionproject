@@ -86,24 +86,58 @@ def ajoutdesindicesencommun(list_n):
             mot += list_n[j]
             if listIndexNew[k] == -1:
                 listIndexNew[k] = j
-
         listMot.append(mot)
 
     k = 0
     p = 0
+    nindexlist = []
     for i, j in zip(listIndexNew, listMot):
+        nindexlist = nindexlist + [i - p]
         if list_n[i - p] != j:
             list_n[i - p] = j
-
             for u in range(1, len(listIndex[k])):
                 list_n.remove(list_n[listIndex[k][u] - p])
                 p += 1
 
-        print(list_n, '\n')
         k += 1
 
-    print('list', list_n)
-    return list_n
+    return list_n, nindexlist
+
+
+def demand_letter_before(mot, listletters):
+    while True:
+        letter = input("Quelle est la premiere lettre de " + mot + '? (si aucune appuyez sur entrée)')
+        letter = letter.upper()
+        if letter in listletters or letter == '':
+            break
+    created_word = letter + mot
+    return created_word
+
+
+def demand_letter_after(mot, listletters):
+    while True:
+        letter = input("Quelle est la derniere lettre de " + mot + '? (si aucune appuyez sur entrée)')
+        letter = letter.upper()
+        if letter in listletters or letter == '':
+            break
+    created_word = mot + letter
+    return created_word
+
+
+def demand_letter_both(mot, listletters_av, listletters_ap):
+    while True:
+        letter_av = input("Quelle est la premiere lettre de " + mot + '? (si aucune appuyez sur entrée)')
+        letter_av = letter_av.upper()
+        if letter_av in listletters_av or letter_av == '':
+            break
+    while True:
+        letter_ap = input("Quelle est la derniere lettre de " + letter_av + mot + '? (si aucune appuyez sur entrée)')
+        letter_ap = letter_ap.upper()
+        if letter_ap in listletters_ap or letter_ap == '':
+            break
+    created_word = letter_av + mot + letter_ap
+    print(created_word)
+    return created_word
 
 
 # Press the green button in the gutter to run the script.
@@ -115,11 +149,31 @@ if __name__ == '__main__':
     scoreB = 0
     nbTours = 0
     listWords = open(r"ressources\\ods6.txt").read().splitlines()
+    previousList = []
+    new = []
     for i in range(10, 17):
+        nbTours += 1
         path = fr'ressources\\IMG_2_{str(i)}.jpg'
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         thresholdedImg = traitement_images(img)
         resultList = detection_mot(thresholdedImg)
         print("result: ", resultList)
-        res = ajoutdesindicesencommun(resultList)
+        res, resIndex = ajoutdesindicesencommun(resultList)
+        for i in resIndex:
+            if i == 0:
+                res[i] = demand_letter_after(res[i], res[i+1])
+            elif i == len(res)-1:
+                res[i] = demand_letter_before(res[i], res[i-1])
+            else:
+                res[i] = demand_letter_both(res[i], res[i-1], res[i+1])
         print(res)
+        for j in res:
+            score = score_mot(listLetters, j, listWords)
+            print("mot: ", j, "score: ", score)
+        if nbTours > 1:
+            new = [ele for ele in res]
+            for a in previousList:
+                if a in res:
+                    new.remove(a)
+        previousList = res
+        print(new, "new")
