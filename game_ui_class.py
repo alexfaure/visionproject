@@ -63,9 +63,9 @@ class Tableau_score(object):
             j.Total()
             i += 1
 
-    def next(self):
+    def next(self,score):
         # Permet d'ajouter le score calculer et de passer à l'autre joueurs
-        self.joueurs[self.jactif].add_score(5)
+        self.joueurs[self.jactif].add_score(score)
         self.jactif = (self.jactif + 1) % self.nb_joueur  # ajouter le modulo nb joueur
 
 
@@ -194,7 +194,7 @@ class Ui_MainWindow(object):
 
         self.photo.setPixmap(QtGui.QPixmap(im.file))
         j = tab.jactif
-        tab.next()
+        tab.next(score)
         i = len(tab.joueurs[j].score) - 1
         # print(j, i)
         self.table.setRowCount(len(tab.joueurs[0].score))
